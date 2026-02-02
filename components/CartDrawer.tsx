@@ -18,25 +18,25 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/30"
+        className="fixed inset-0 z-40 bg-charcoal/40"
         onClick={onClose}
       />
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-xl">
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md border-l border-ivory-dark bg-ivory shadow-2xl">
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b px-6 py-4">
-            <h2 className="text-lg font-semibold">Your Cart</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <div className="flex items-center justify-between border-b border-ivory-dark px-6 py-5">
+            <h2 className="font-heading text-xl font-normal text-charcoal">Your Cart</h2>
+            <button onClick={onClose} className="text-warm-gray transition-colors hover:text-charcoal">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {/* Dates */}
           {dates.startDate && dates.endDate && (
-            <div className="border-b bg-indigo-50 px-6 py-3 text-sm text-indigo-700">
+            <div className="border-b border-ivory-dark bg-white px-6 py-3 font-body text-sm text-champagne">
               {dates.startDate} &rarr; {dates.endDate}
             </div>
           )}
@@ -44,38 +44,38 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
           {/* Items */}
           <div className="flex-1 overflow-y-auto px-6 py-4">
             {items.length === 0 ? (
-              <p className="text-center text-gray-500">Your cart is empty</p>
+              <p className="py-8 text-center font-body text-sm text-warm-gray">Your cart is empty</p>
             ) : (
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {items.map((item) => (
-                  <li key={item.productId} className="flex items-center gap-4 rounded-lg border p-3">
+                  <li key={item.productId} className="flex items-center gap-4 border border-ivory-dark bg-white p-4">
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">{item.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-heading text-base font-normal text-charcoal">{item.name}</p>
+                      <p className="font-body text-xs text-warm-gray">
                         {formatCents(item.basePriceCents)} &times; {item.qty}
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => updateQty(item.productId, item.qty - 1)}
-                        className="h-7 w-7 rounded border text-sm hover:bg-gray-50"
+                        className="flex h-7 w-7 items-center justify-center border border-ivory-dark font-body text-sm text-charcoal-light hover:border-champagne"
                       >
                         &minus;
                       </button>
-                      <span className="w-6 text-center text-sm">{item.qty}</span>
+                      <span className="w-6 text-center font-body text-sm text-charcoal">{item.qty}</span>
                       <button
                         onClick={() => updateQty(item.productId, item.qty + 1)}
-                        className="h-7 w-7 rounded border text-sm hover:bg-gray-50"
+                        className="flex h-7 w-7 items-center justify-center border border-ivory-dark font-body text-sm text-charcoal-light hover:border-champagne"
                       >
                         +
                       </button>
                     </div>
                     <button
                       onClick={() => removeItem(item.productId)}
-                      className="text-red-400 hover:text-red-600"
+                      className="text-warm-gray-light transition-colors hover:text-red-400"
                     >
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
                   </li>
@@ -86,11 +86,11 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
 
           {/* Footer */}
           {items.length > 0 && (
-            <div className="border-t px-6 py-4">
+            <div className="border-t border-ivory-dark px-6 py-5">
               <Link
                 href="/cart"
                 onClick={onClose}
-                className="block w-full rounded-lg bg-indigo-600 py-3 text-center font-medium text-white transition hover:bg-indigo-700"
+                className="block w-full bg-champagne py-3.5 text-center font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark"
               >
                 View Cart &amp; Checkout
               </Link>

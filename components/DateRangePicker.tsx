@@ -44,7 +44,7 @@ export default function DateRangePicker({
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
       <div className="flex-1">
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label className="mb-1 block font-body text-xs font-medium text-warm-gray">
           Start Date
         </label>
         <input
@@ -52,11 +52,11 @@ export default function DateRangePicker({
           value={start}
           min={minDate}
           onChange={(e) => handleStartChange(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full border border-ivory-dark bg-white px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none focus:ring-1 focus:ring-champagne"
         />
       </div>
       <div className="flex-1">
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label className="mb-1 block font-body text-xs font-medium text-warm-gray">
           End Date
         </label>
         <input
@@ -64,7 +64,7 @@ export default function DateRangePicker({
           value={end}
           min={start || minDate}
           onChange={(e) => handleEndChange(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full border border-ivory-dark bg-white px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none focus:ring-1 focus:ring-champagne"
         />
       </div>
     </div>

@@ -5,8 +5,8 @@ const images = [
     span: "col-span-2 row-span-2",
   },
   {
-    src: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80",
-    alt: "Gold chiavari chairs at ceremony",
+    src: "/couple_image.png",
+    alt: "Happy couple at wedding event",
     span: "",
   },
   {
@@ -25,8 +25,8 @@ const images = [
     span: "",
   },
   {
-    src: "https://images.unsplash.com/photo-1470162656305-6f429ba817bf?w=600&q=80",
-    alt: "Tabletop decor with candles",
+    src: "/bride_image.png",
+    alt: "Bride at elegant event",
     span: "",
   },
   {

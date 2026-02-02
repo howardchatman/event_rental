@@ -14,7 +14,7 @@ export default function CartPage() {
   const router = useRouter();
   const {
     items, dates, deliveryRequired, deliveryAddress,
-    removeItem, updateQty, setDates, setDelivery, clearCart,
+    removeItem, updateQty, setDates, setDelivery,
   } = useCartStore();
   const [loading, setLoading] = useState(false);
 
@@ -77,7 +77,6 @@ export default function CartPage() {
         return;
       }
 
-      // Redirect to Stripe Checkout
       window.location.href = data.url;
     } catch {
       toast.error("Something went wrong");
@@ -87,118 +86,129 @@ export default function CartPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-3xl font-bold">Your Cart</h1>
+    <div>
+      {/* Hero strip */}
+      <section className="bg-charcoal px-6 py-10 text-center text-white">
+        <h1 className="text-3xl font-light sm:text-4xl">Your Cart</h1>
+      </section>
 
-      {/* Date picker */}
-      <div className="mb-6 rounded-xl border bg-white p-5">
-        <h2 className="mb-3 font-semibold">Rental Dates</h2>
-        <DateRangePicker
-          startDate={dates.startDate || ""}
-          endDate={dates.endDate || ""}
-          onChange={(s, e) => setDates(s, e)}
-        />
-      </div>
-
-      {/* Items */}
-      {items.length === 0 ? (
-        <p className="py-12 text-center text-gray-500">Your cart is empty.</p>
-      ) : (
-        <div className="space-y-4">
-          {items.map((item) => {
-            const lineItem = totals?.lineItems.find((l) => l.productId === item.productId);
-            return (
-              <div
-                key={item.productId}
-                className="flex flex-col gap-3 rounded-xl border bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="flex-1">
-                  <p className="font-semibold">{item.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {formatCents(item.basePriceCents)}/{item.pricingModel === "flat" ? "event" : "day"}
-                  </p>
-                </div>
-                <QuantitySelector qty={item.qty} onChange={(q) => updateQty(item.productId, q)} />
-                <div className="text-right">
-                  {lineItem && (
-                    <p className="font-semibold">{formatCents(lineItem.lineTotalCents)}</p>
-                  )}
-                  <button
-                    onClick={() => removeItem(item.productId)}
-                    className="mt-1 text-sm text-red-500 hover:underline"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+      <div className="mx-auto max-w-3xl px-6 py-12">
+        {/* Date picker */}
+        <div className="mb-6 border border-ivory-dark bg-white p-6">
+          <h2 className="mb-3 font-body text-xs font-semibold uppercase tracking-[0.15em] text-charcoal-light">
+            Rental Dates
+          </h2>
+          <DateRangePicker
+            startDate={dates.startDate || ""}
+            endDate={dates.endDate || ""}
+            onChange={(s, e) => setDates(s, e)}
+          />
         </div>
-      )}
 
-      {/* Delivery */}
-      <div className="mt-6 rounded-xl border bg-white p-5">
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            checked={deliveryRequired}
-            onChange={(e) => setDelivery(e.target.checked, deliveryAddress)}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600"
-          />
-          <span className="font-medium">Delivery required (+{formatCents(7500)})</span>
-        </label>
-        {deliveryRequired && (
-          <textarea
-            value={deliveryAddress}
-            onChange={(e) => setDelivery(true, e.target.value)}
-            placeholder="Enter delivery address..."
-            className="mt-3 w-full rounded-lg border px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            rows={2}
-          />
+        {/* Items */}
+        {items.length === 0 ? (
+          <p className="py-16 text-center font-body text-warm-gray">Your cart is empty.</p>
+        ) : (
+          <div className="space-y-3">
+            {items.map((item) => {
+              const lineItem = totals?.lineItems.find((l) => l.productId === item.productId);
+              return (
+                <div
+                  key={item.productId}
+                  className="flex flex-col gap-3 border border-ivory-dark bg-white p-5 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex-1">
+                    <p className="font-heading text-lg font-normal text-charcoal">{item.name}</p>
+                    <p className="font-body text-sm text-warm-gray">
+                      {formatCents(item.basePriceCents)}/{item.pricingModel === "flat" ? "event" : "day"}
+                    </p>
+                  </div>
+                  <QuantitySelector qty={item.qty} onChange={(q) => updateQty(item.productId, q)} />
+                  <div className="text-right">
+                    {lineItem && (
+                      <p className="font-body text-base font-medium text-charcoal">
+                        {formatCents(lineItem.lineTotalCents)}
+                      </p>
+                    )}
+                    <button
+                      onClick={() => removeItem(item.productId)}
+                      className="mt-1 font-body text-xs text-warm-gray transition-colors hover:text-red-500"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
-      </div>
 
-      {/* Totals */}
-      {totals && items.length > 0 && (
-        <div className="mt-6 rounded-xl border bg-white p-5">
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium">{formatCents(totals.subtotalCents)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Tax (8%)</span>
-              <span className="font-medium">{formatCents(totals.taxCents)}</span>
-            </div>
-            {deliveryRequired && (
+        {/* Delivery */}
+        <div className="mt-6 border border-ivory-dark bg-white p-6">
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={deliveryRequired}
+              onChange={(e) => setDelivery(e.target.checked, deliveryAddress)}
+              className="h-4 w-4 rounded border-warm-gray-light text-champagne accent-champagne"
+            />
+            <span className="font-body text-sm font-medium text-charcoal">
+              Delivery required (+{formatCents(7500)})
+            </span>
+          </label>
+          {deliveryRequired && (
+            <textarea
+              value={deliveryAddress}
+              onChange={(e) => setDelivery(true, e.target.value)}
+              placeholder="Enter delivery address..."
+              className="mt-3 w-full border border-ivory-dark px-4 py-3 font-body text-sm text-charcoal placeholder:text-warm-gray-light focus:border-champagne focus:outline-none focus:ring-1 focus:ring-champagne"
+              rows={2}
+            />
+          )}
+        </div>
+
+        {/* Totals */}
+        {totals && items.length > 0 && (
+          <div className="mt-6 border border-ivory-dark bg-white p-6">
+            <div className="space-y-3 font-body text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">Delivery Fee</span>
-                <span className="font-medium">{formatCents(totals.deliveryFeeCents)}</span>
+                <span className="text-warm-gray">Subtotal</span>
+                <span className="text-charcoal">{formatCents(totals.subtotalCents)}</span>
               </div>
-            )}
-            <div className="flex justify-between">
-              <span className="text-gray-600">Security Deposit (refundable)</span>
-              <span className="font-medium">{formatCents(totals.depositCents)}</span>
-            </div>
-            <hr />
-            <div className="flex justify-between text-lg font-bold">
-              <span>Total</span>
-              <span>{formatCents(totals.totalCents)}</span>
+              <div className="flex justify-between">
+                <span className="text-warm-gray">Tax (8%)</span>
+                <span className="text-charcoal">{formatCents(totals.taxCents)}</span>
+              </div>
+              {deliveryRequired && (
+                <div className="flex justify-between">
+                  <span className="text-warm-gray">Delivery Fee</span>
+                  <span className="text-charcoal">{formatCents(totals.deliveryFeeCents)}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-warm-gray">Security Deposit (refundable)</span>
+                <span className="text-charcoal">{formatCents(totals.depositCents)}</span>
+              </div>
+              <div className="border-t border-ivory-dark pt-3" />
+              <div className="flex justify-between font-heading text-xl font-normal">
+                <span className="text-charcoal">Total</span>
+                <span className="text-charcoal">{formatCents(totals.totalCents)}</span>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Checkout button */}
-      {items.length > 0 && (
-        <button
-          onClick={handleCheckout}
-          disabled={loading || !hasDates}
-          className="mt-6 w-full rounded-lg bg-indigo-600 py-3 text-lg font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {loading ? "Redirecting to payment..." : "Proceed to Checkout"}
-        </button>
-      )}
+        {/* Checkout button */}
+        {items.length > 0 && (
+          <button
+            onClick={handleCheckout}
+            disabled={loading || !hasDates}
+            className="mt-6 w-full bg-champagne py-4 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark disabled:opacity-40"
+          >
+            {loading ? "Redirecting to payment..." : "Proceed to Checkout"}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

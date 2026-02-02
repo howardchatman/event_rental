@@ -12,10 +12,10 @@ export default function CategoryFilter({ categories, activeSlug }: CategoryFilte
     <div className="flex flex-wrap gap-2">
       <Link
         href="/products"
-        className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+        className={`rounded-full border px-5 py-2 font-body text-sm font-medium transition-all ${
           !activeSlug
-            ? "bg-indigo-600 text-white"
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            ? "border-champagne bg-champagne text-white"
+            : "border-ivory-dark bg-white text-charcoal-light hover:border-champagne hover:text-champagne"
         }`}
       >
         All
@@ -24,10 +24,10 @@ export default function CategoryFilter({ categories, activeSlug }: CategoryFilte
         <Link
           key={cat.id}
           href={`/products?category=${cat.slug}`}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+          className={`rounded-full border px-5 py-2 font-body text-sm font-medium transition-all ${
             activeSlug === cat.slug
-              ? "bg-indigo-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "border-champagne bg-champagne text-white"
+              : "border-ivory-dark bg-white text-charcoal-light hover:border-champagne hover:text-champagne"
           }`}
         >
           {cat.name}

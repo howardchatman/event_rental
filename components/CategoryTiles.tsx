@@ -3,7 +3,7 @@ import Link from "next/link";
 const categories = [
   {
     name: "Chairs",
-    image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80",
+    image: "/chair_image.png",
     href: "/products?category=chairs",
   },
   {
@@ -13,17 +13,17 @@ const categories = [
   },
   {
     name: "Linens",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    image: "/linen_image.png",
     href: "/products?category=linens",
   },
   {
     name: "Arches",
-    image: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&q=80",
+    image: "/arch_image.png",
     href: "/products?category=arches",
   },
   {
     name: "Tabletop",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80",
+    image: "/centerpiece_image.png",
     href: "/products?category=tabletop",
   },
 ];

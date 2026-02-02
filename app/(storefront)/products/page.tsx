@@ -29,35 +29,51 @@ export default async function ProductsPage({
 
   return (
     <div>
-      <h1 className="mb-6 text-3xl font-bold">All Products</h1>
+      {/* Hero strip */}
+      <section className="bg-charcoal px-6 py-14 text-center text-white">
+        <p className="mb-2 font-body text-sm uppercase tracking-[0.2em] text-champagne-light">
+          Lolita Harris Event Rentals
+        </p>
+        <h1 className="text-4xl font-light sm:text-5xl">The Collection</h1>
+        <p className="mx-auto mt-3 max-w-xl font-body text-sm text-white/60">
+          Elegant chairs, tables, linens, arches, and tabletop decor —
+          hand-selected for celebrations that deserve every beautiful detail.
+        </p>
+      </section>
 
-      <CategoryFilter
-        categories={categories || []}
-        activeSlug={category || null}
-      />
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <CategoryFilter
+          categories={categories || []}
+          activeSlug={category || null}
+        />
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {products?.map((p) => {
-          const img = p.product_images?.sort(
-            (a: { sort: number }, b: { sort: number }) => a.sort - b.sort
-          )[0];
-          return (
-            <ProductCard
-              key={p.id}
-              id={p.id}
-              name={p.name}
-              slug={p.slug}
-              basePriceCents={p.base_price_cents}
-              pricingModel={p.pricing_model}
-              imageUrl={img?.url}
-              categoryName={(p.categories as { name: string } | null)?.name}
-            />
-          );
-        })}
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {products?.map((p) => {
+            const img = p.product_images?.sort(
+              (a: { sort: number }, b: { sort: number }) => a.sort - b.sort
+            )[0];
+            return (
+              <ProductCard
+                key={p.id}
+                id={p.id}
+                name={p.name}
+                slug={p.slug}
+                basePriceCents={p.base_price_cents}
+                pricingModel={p.pricing_model}
+                imageUrl={img?.url}
+                categoryName={
+                  (p.categories as { name: string } | null)?.name
+                }
+              />
+            );
+          })}
+        </div>
+        {(!products || products.length === 0) && (
+          <p className="py-16 text-center font-body text-warm-gray">
+            No products found. Check back soon.
+          </p>
+        )}
       </div>
-      {(!products || products.length === 0) && (
-        <p className="py-12 text-center text-gray-500">No products found.</p>
-      )}
     </div>
   );
 }

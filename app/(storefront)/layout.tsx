@@ -8,7 +8,8 @@ export default function StorefrontLayout({
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      {/* pt-16 compensates for the fixed navbar height */}
+      <main className="pt-16">{children}</main>
     </>
   );
 }

@@ -11,7 +11,6 @@ export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const items = useCartStore((s) => s.items);
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0);
 
@@ -39,12 +38,6 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -53,23 +46,14 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        className={`sticky top-0 z-30 border-b transition-all duration-300 ${
-          scrolled
-            ? "border-ivory-dark bg-ivory/95 backdrop-blur-md shadow-sm"
-            : "border-transparent bg-transparent"
-        }`}
-      >
-        <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6">
+      <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-[#0b0f14]">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link
             href="/"
-            className={`font-heading text-xl tracking-wide transition-colors duration-300 ${
-              scrolled ? "text-charcoal" : "text-white"
-            }`}
+            className="font-heading text-xl tracking-wide text-white"
           >
             Lolita Harris
-            <span className="ml-1 hidden font-body text-xs font-light uppercase tracking-[0.15em] sm:inline">
-              {" "}
+            <span className="ml-1.5 hidden font-body text-[11px] font-light uppercase tracking-[0.15em] text-white/50 sm:inline">
               Event Rentals
             </span>
           </Link>
@@ -77,22 +61,14 @@ export default function Navbar() {
           <div className="flex items-center gap-6">
             <Link
               href="/products"
-              className={`font-body text-sm font-medium tracking-wide transition-colors duration-300 ${
-                scrolled
-                  ? "text-charcoal-light hover:text-champagne"
-                  : "text-white/80 hover:text-white"
-              }`}
+              className="font-body text-sm font-medium tracking-wide text-white/70 transition-colors hover:text-champagne-light"
             >
               Collection
             </Link>
 
             <Link
               href="/demo"
-              className={`font-body text-sm font-medium tracking-wide transition-colors duration-300 ${
-                scrolled
-                  ? "text-champagne hover:text-champagne-dark"
-                  : "text-champagne-light hover:text-white"
-              }`}
+              className="font-body text-sm font-medium tracking-wide text-champagne-light transition-colors hover:text-champagne"
             >
               Demo
             </Link>
@@ -100,11 +76,7 @@ export default function Navbar() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className={`font-body text-sm font-medium tracking-wide transition-colors duration-300 ${
-                  scrolled
-                    ? "text-charcoal-light hover:text-champagne"
-                    : "text-white/80 hover:text-white"
-                }`}
+                className="font-body text-sm font-medium tracking-wide text-white/70 transition-colors hover:text-champagne-light"
               >
                 Admin
               </Link>
@@ -113,11 +85,7 @@ export default function Navbar() {
             {user && (
               <Link
                 href="/account"
-                className={`font-body text-sm font-medium tracking-wide transition-colors duration-300 ${
-                  scrolled
-                    ? "text-charcoal-light hover:text-champagne"
-                    : "text-white/80 hover:text-white"
-                }`}
+                className="font-body text-sm font-medium tracking-wide text-white/70 transition-colors hover:text-champagne-light"
               >
                 Account
               </Link>
@@ -125,11 +93,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setCartOpen(true)}
-              className={`relative transition-colors duration-300 ${
-                scrolled
-                  ? "text-charcoal-light hover:text-champagne"
-                  : "text-white/80 hover:text-white"
-              }`}
+              className="relative text-white/70 transition-colors hover:text-champagne-light"
             >
               <svg
                 className="h-5 w-5"
@@ -154,18 +118,14 @@ export default function Navbar() {
             {user ? (
               <button
                 onClick={handleSignOut}
-                className={`font-body text-sm font-medium transition-colors duration-300 ${
-                  scrolled
-                    ? "text-charcoal-light hover:text-champagne"
-                    : "text-white/80 hover:text-white"
-                }`}
+                className="font-body text-sm font-medium text-white/70 transition-colors hover:text-champagne-light"
               >
                 Sign Out
               </button>
             ) : (
               <Link
                 href="/login"
-                className="border border-champagne bg-champagne/90 px-5 py-2 font-body text-xs font-semibold uppercase tracking-wider text-white transition-all duration-300 hover:bg-champagne"
+                className="border border-champagne/60 bg-champagne/20 px-5 py-2 font-body text-xs font-semibold uppercase tracking-wider text-champagne-light transition-all hover:bg-champagne/30"
               >
                 Sign In
               </Link>

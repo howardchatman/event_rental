@@ -59,43 +59,48 @@ function LoginForm() {
   };
 
   return (
-    <div className="mx-auto max-w-md py-16">
-      <h1 className="mb-8 text-center text-3xl font-bold">
-        {isSignUp ? "Create Account" : "Sign In"}
-      </h1>
+    <div className="mx-auto max-w-md px-6 py-20">
+      <div className="mb-8 text-center">
+        <p className="mb-2 font-body text-sm uppercase tracking-[0.2em] text-champagne">
+          Lolita Harris Event Rentals
+        </p>
+        <h1 className="text-3xl font-light text-charcoal">
+          {isSignUp ? "Create Account" : "Welcome Back"}
+        </h1>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border bg-white p-6">
+      <form onSubmit={handleSubmit} className="space-y-4 border border-ivory-dark bg-white p-6">
         {isSignUp && (
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">
               Full Name
             </label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none focus:ring-1 focus:ring-champagne"
               required
             />
           </div>
         )}
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
+          <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none focus:ring-1 focus:ring-champagne"
             required
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">Password</label>
+          <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none focus:ring-1 focus:ring-champagne"
             required
             minLength={6}
           />
@@ -103,17 +108,17 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-indigo-600 py-2.5 font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+          className="w-full bg-champagne py-3 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark disabled:opacity-40"
         >
-          {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
+          {loading ? "Loading..." : isSignUp ? "Create Account" : "Sign In"}
         </button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-gray-600">
-        {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+      <p className="mt-5 text-center font-body text-sm text-warm-gray">
+        {isSignUp ? "Already have an account?" : "Don\u2019t have an account?"}{" "}
         <button
           onClick={() => setIsSignUp(!isSignUp)}
-          className="font-medium text-indigo-600 hover:underline"
+          className="font-medium text-champagne hover:text-champagne-dark"
         >
           {isSignUp ? "Sign In" : "Sign Up"}
         </button>

@@ -87,88 +87,98 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         : `${formatCents(product.basePriceCents)}/day`;
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2">
-      {/* Images */}
-      <div>
-        <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gray-100">
-          {product.images.length > 0 ? (
-            <Image
-              src={product.images[selectedImage]?.url}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width:1024px) 100vw, 50vw"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-gray-400">
-              No image
+    <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="grid gap-10 lg:grid-cols-2">
+        {/* Images */}
+        <div>
+          <div className="relative aspect-[4/3] overflow-hidden bg-ivory-dark">
+            {product.images.length > 0 ? (
+              <Image
+                src={product.images[selectedImage]?.url}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center font-body text-warm-gray">
+                No image
+              </div>
+            )}
+          </div>
+          {product.images.length > 1 && (
+            <div className="mt-3 flex gap-2">
+              {product.images.map((img, i) => (
+                <button
+                  key={img.id}
+                  onClick={() => setSelectedImage(i)}
+                  className={`relative h-16 w-16 overflow-hidden border-2 transition-colors ${
+                    i === selectedImage ? "border-champagne" : "border-transparent"
+                  }`}
+                >
+                  <Image src={img.url} alt="" fill className="object-cover" sizes="64px" />
+                </button>
+              ))}
             </div>
           )}
         </div>
-        {product.images.length > 1 && (
-          <div className="mt-3 flex gap-2">
-            {product.images.map((img, i) => (
-              <button
-                key={img.id}
-                onClick={() => setSelectedImage(i)}
-                className={`relative h-16 w-16 overflow-hidden rounded-lg border-2 ${
-                  i === selectedImage ? "border-indigo-600" : "border-transparent"
-                }`}
-              >
-                <Image src={img.url} alt="" fill className="object-cover" sizes="64px" />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
 
-      {/* Details */}
-      <div>
-        <span className="text-sm font-medium uppercase tracking-wider text-indigo-600">
-          {product.categoryName}
-        </span>
-        <h1 className="mt-1 text-3xl font-bold">{product.name}</h1>
-        <p className="mt-1 text-2xl font-semibold text-gray-800">{priceLabel}</p>
+        {/* Details */}
+        <div>
+          <span className="font-body text-[11px] font-semibold uppercase tracking-[0.15em] text-champagne">
+            {product.categoryName}
+          </span>
+          <h1 className="mt-2 text-3xl font-light text-charcoal sm:text-4xl">
+            {product.name}
+          </h1>
+          <p className="mt-2 font-body text-xl text-charcoal-light">{priceLabel}</p>
 
-        {product.description && (
-          <p className="mt-4 text-gray-600">{product.description}</p>
-        )}
-
-        <div className="mt-6 space-y-5 rounded-xl border bg-white p-5">
-          <div>
-            <h3 className="mb-2 text-sm font-semibold text-gray-700">Rental Dates</h3>
-            <DateRangePicker
-              startDate={startDate}
-              endDate={endDate}
-              onChange={(s, e) => setDates(s, e)}
-            />
-          </div>
-
-          {checking && (
-            <p className="text-sm text-gray-500">Checking availability...</p>
-          )}
-          {!checking && available !== null && (
-            <p className={`text-sm font-medium ${available > 0 ? "text-green-600" : "text-red-600"}`}>
-              {available > 0 ? `${available} available` : "Sold out for these dates"}
+          {product.description && (
+            <p className="mt-5 font-body text-sm leading-relaxed text-warm-gray">
+              {product.description}
             </p>
           )}
 
-          <div>
-            <h3 className="mb-2 text-sm font-semibold text-gray-700">Quantity</h3>
-            <QuantitySelector
-              qty={qty}
-              max={available ?? product.totalQty}
-              onChange={setQty}
-            />
-          </div>
+          <div className="mt-8 space-y-6 border border-ivory-dark bg-white p-6">
+            <div>
+              <h3 className="mb-3 font-body text-xs font-semibold uppercase tracking-[0.15em] text-charcoal-light">
+                Rental Dates
+              </h3>
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(s, e) => setDates(s, e)}
+              />
+            </div>
 
-          <button
-            onClick={handleAddToCart}
-            disabled={!startDate || !endDate || (available !== null && available < qty)}
-            className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Add to Cart
-          </button>
+            {checking && (
+              <p className="font-body text-sm text-warm-gray">Checking availability...</p>
+            )}
+            {!checking && available !== null && (
+              <p className={`font-body text-sm font-medium ${available > 0 ? "text-green-700" : "text-red-600"}`}>
+                {available > 0 ? `${available} available for your dates` : "Sold out for these dates"}
+              </p>
+            )}
+
+            <div>
+              <h3 className="mb-3 font-body text-xs font-semibold uppercase tracking-[0.15em] text-charcoal-light">
+                Quantity
+              </h3>
+              <QuantitySelector
+                qty={qty}
+                max={available ?? product.totalQty}
+                onChange={setQty}
+              />
+            </div>
+
+            <button
+              onClick={handleAddToCart}
+              disabled={!startDate || !endDate || (available !== null && available < qty)}
+              className="w-full bg-champagne py-3.5 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
     </div>

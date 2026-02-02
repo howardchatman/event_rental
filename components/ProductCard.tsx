@@ -32,31 +32,31 @@ export default function ProductCard({
   return (
     <Link
       href={`/products/${slug}`}
-      className="group block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
+      className="group block overflow-hidden border border-ivory-dark bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
     >
-      <div className="relative aspect-[4/3] w-full bg-gray-100">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-ivory-dark">
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={name}
             fill
-            className="object-cover transition group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
             sizes="(max-width:768px) 100vw, 33vw"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">
+          <div className="flex h-full items-center justify-center font-body text-sm text-warm-gray-light">
             No image
           </div>
         )}
       </div>
-      <div className="p-4">
+      <div className="p-5">
         {categoryName && (
-          <span className="text-xs font-medium uppercase tracking-wider text-indigo-600">
+          <span className="font-body text-[11px] font-semibold uppercase tracking-[0.15em] text-champagne">
             {categoryName}
           </span>
         )}
-        <h3 className="mt-1 text-lg font-semibold text-gray-900">{name}</h3>
-        <p className="mt-1 text-sm font-medium text-gray-700">{priceLabel}</p>
+        <h3 className="mt-1 font-heading text-lg font-normal text-charcoal">{name}</h3>
+        <p className="mt-1 font-body text-sm text-warm-gray">{priceLabel}</p>
       </div>
     </Link>
   );
