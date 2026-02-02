@@ -13,12 +13,12 @@ const MOCK_CATEGORIES = [
 ];
 
 const MOCK_PRODUCTS = [
-  { id: "p1", name: "20x40 White Tent", slug: "20x40-tent", basePriceCents: 45000, pricingModel: "per_day" as const, category: "tents", totalQty: 8, image: null, description: "Elegant white frame tent, perfect for outdoor receptions. Seats up to 80 guests." },
-  { id: "p2", name: "Round Table (60\")", slug: "round-table-60", basePriceCents: 1500, pricingModel: "per_day" as const, category: "tables", totalQty: 50, image: null, description: "60-inch round banquet table. Seats 8-10 guests comfortably." },
-  { id: "p3", name: "Chiavari Chair (Gold)", slug: "chiavari-gold", basePriceCents: 800, pricingModel: "per_day" as const, category: "tables", totalQty: 200, image: null, description: "Elegant gold chiavari chair with ivory cushion." },
-  { id: "p4", name: "String Light Set (100ft)", slug: "string-lights-100", basePriceCents: 7500, pricingModel: "flat" as const, category: "lighting", totalQty: 20, image: null, description: "Warm white Edison-style string lights. 100ft strand with 50 bulbs." },
-  { id: "p5", name: "PA System w/ 2 Speakers", slug: "pa-system", basePriceCents: 25000, pricingModel: "per_day" as const, category: "av", totalQty: 5, image: null, description: "Professional PA system with two 15\" powered speakers, mixer, and wireless mic." },
-  { id: "p6", name: "LED Uplighting (Set of 10)", slug: "led-uplighting", basePriceCents: 15000, pricingModel: "flat" as const, category: "lighting", totalQty: 10, image: null, description: "Wireless LED uplights with 16 color options. Remote control included." },
+  { id: "p1", name: "20x40 White Tent", slug: "20x40-tent", basePriceCents: 45000, pricingModel: "per_day" as const, category: "tents", totalQty: 8, image: "https://images.unsplash.com/photo-1478827536114-da961b7f86d2?w=600&q=80", description: "Elegant white frame tent, perfect for outdoor receptions. Seats up to 80 guests." },
+  { id: "p2", name: "Round Table (60\")", slug: "round-table-60", basePriceCents: 1500, pricingModel: "per_day" as const, category: "tables", totalQty: 50, image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80", description: "60-inch round banquet table. Seats 8-10 guests comfortably." },
+  { id: "p3", name: "Chiavari Chair (Gold)", slug: "chiavari-gold", basePriceCents: 800, pricingModel: "per_day" as const, category: "tables", totalQty: 200, image: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80", description: "Elegant gold chiavari chair with ivory cushion." },
+  { id: "p4", name: "String Light Set (100ft)", slug: "string-lights-100", basePriceCents: 7500, pricingModel: "flat" as const, category: "lighting", totalQty: 20, image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80", description: "Warm white Edison-style string lights. 100ft strand with 50 bulbs." },
+  { id: "p5", name: "PA System w/ 2 Speakers", slug: "pa-system", basePriceCents: 25000, pricingModel: "per_day" as const, category: "av", totalQty: 5, image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80", description: "Professional PA system with two 15\" powered speakers, mixer, and wireless mic." },
+  { id: "p6", name: "LED Uplighting (Set of 10)", slug: "led-uplighting", basePriceCents: 15000, pricingModel: "flat" as const, category: "lighting", totalQty: 10, image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80", description: "Wireless LED uplights with 16 color options. Remote control included." },
 ];
 
 const MOCK_ORDERS = [
@@ -134,6 +134,19 @@ export default function CustomerDemoPage() {
           ))}
         </div>
 
+        {/* Back button */}
+        {currentIndex > 0 && (
+          <button
+            onClick={() => setStep(steps[currentIndex - 1].key)}
+            className="mb-4 flex items-center gap-2 font-body text-sm font-medium text-charcoal-light transition-colors hover:text-champagne"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to {steps[currentIndex - 1].label}
+          </button>
+        )}
+
         {/* Step content */}
         <div className="border border-ivory-dark bg-white p-6">
           {/* ── BROWSE ─────────────────────────────────────────── */}
@@ -162,9 +175,10 @@ export default function CustomerDemoPage() {
                     onClick={() => { setSelectedProduct(p); setStep("product-detail"); }}
                     className="border border-ivory-dark p-4 text-left transition-all hover:border-champagne/40 hover:shadow-md hover:-translate-y-0.5"
                   >
-                    <div className="mb-3 flex h-32 items-center justify-center bg-ivory-dark text-3xl">
-                      {p.category === "tents" ? "\u26FA" : p.category === "tables" ? "\u{1FA91}" : p.category === "lighting" ? "\u{1F4A1}" : "\u{1F3B5}"}
-                    </div>
+                    <div
+                      className="mb-3 h-32 bg-cover bg-center"
+                      style={{ backgroundImage: `url('${p.image}')` }}
+                    />
                     <h3 className="font-heading text-base font-normal text-charcoal">{p.name}</h3>
                     <p className="font-body text-sm text-warm-gray">
                       {p.pricingModel === "flat"
@@ -181,9 +195,10 @@ export default function CustomerDemoPage() {
           {/* ── PRODUCT DETAIL ─────────────────────────────────── */}
           {step === "product-detail" && (
             <div className="grid gap-8 md:grid-cols-2">
-              <div className="flex items-center justify-center bg-ivory-dark p-12 text-6xl">
-                {selectedProduct.category === "tents" ? "\u26FA" : selectedProduct.category === "tables" ? "\u{1FA91}" : selectedProduct.category === "lighting" ? "\u{1F4A1}" : "\u{1F3B5}"}
-              </div>
+              <div
+                className="min-h-[300px] bg-cover bg-center"
+                style={{ backgroundImage: `url('${selectedProduct.image}')` }}
+              />
               <div>
                 <h2 className="font-heading text-3xl font-light text-charcoal">{selectedProduct.name}</h2>
                 <p className="mt-2 font-body text-xl text-charcoal-light">

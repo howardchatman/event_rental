@@ -73,6 +73,13 @@ export default function Navbar() {
               Demo
             </Link>
 
+            <Link
+              href="/demo/admin"
+              className="font-body text-sm font-medium tracking-wide text-charcoal/70 transition-colors hover:text-charcoal"
+            >
+              Admin Demo
+            </Link>
+
             {isAdmin && (
               <Link
                 href="/admin"
