@@ -75,8 +75,9 @@ export default function AdminDemoPage() {
       <div className="mb-6 rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Admin Panel Demo</h1>
-            <p className="mt-1 text-gray-300">Explore the admin dashboard with mock data.</p>
+            <p className="mb-1 text-sm text-gray-400">Welcome, Lolita Harris</p>
+            <h1 className="text-2xl font-bold">Your Business Command Center</h1>
+            <p className="mt-1 text-gray-300">Manage inventory, track orders, schedule appointments, and close leads &mdash; all from one place.</p>
           </div>
           <Link href="/demo" className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
             Customer Demo

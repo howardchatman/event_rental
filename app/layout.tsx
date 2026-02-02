@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EventRental – Rent Everything for Your Event",
-  description: "Browse and rent tables, chairs, tents, lighting, and more for your next event.",
+  title: "EventRental – Lolita Harris Event Rentals",
+  description: "The complete event rental platform for Lolita Harris. Browse and rent tables, chairs, tents, lighting, and more.",
 };
 
 export default function RootLayout({

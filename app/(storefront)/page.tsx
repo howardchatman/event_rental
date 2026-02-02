@@ -16,19 +16,55 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="mb-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 px-8 py-16 text-center text-white">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wider text-indigo-200">
+          Built for Lolita Harris
+        </p>
         <h1 className="text-4xl font-bold sm:text-5xl">
-          Rent Everything for Your Event
+          Your Event Rental Business, Simplified
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-indigo-100">
-          Tables, chairs, tents, lighting, audio &mdash; browse our catalog,
-          pick your dates, and book online in minutes.
+          Customers browse your catalog, pick their dates, and book online &mdash;
+          while you manage inventory, track leads, and close sales from one dashboard.
         </p>
-        <Link
-          href="/products"
-          className="mt-8 inline-block rounded-lg bg-white px-8 py-3 font-semibold text-indigo-700 transition hover:bg-indigo-50"
-        >
-          Browse Products
-        </Link>
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Link
+            href="/products"
+            className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-indigo-700 transition hover:bg-indigo-50"
+          >
+            Browse Products
+          </Link>
+          <Link
+            href="/demo"
+            className="inline-block rounded-lg border-2 border-white/40 px-8 py-3 font-semibold text-white transition hover:bg-white/10"
+          >
+            See Interactive Demo
+          </Link>
+        </div>
+      </section>
+
+      {/* Value props */}
+      <section className="mb-12 grid gap-6 sm:grid-cols-3">
+        <div className="rounded-xl border bg-white p-6 text-center">
+          <div className="mb-3 text-3xl">📦</div>
+          <h3 className="font-bold">Smart Inventory</h3>
+          <p className="mt-2 text-sm text-gray-600">
+            Real-time availability tracking. Customers see exactly what&apos;s available for their dates &mdash; no double bookings.
+          </p>
+        </div>
+        <div className="rounded-xl border bg-white p-6 text-center">
+          <div className="mb-3 text-3xl">💰</div>
+          <h3 className="font-bold">Close More Sales</h3>
+          <p className="mt-2 text-sm text-gray-600">
+            Built-in lead tracker, appointment scheduling, and an AI assistant that helps you upsell and follow up.
+          </p>
+        </div>
+        <div className="rounded-xl border bg-white p-6 text-center">
+          <div className="mb-3 text-3xl">⚡</div>
+          <h3 className="font-bold">24/7 Online Booking</h3>
+          <p className="mt-2 text-sm text-gray-600">
+            Customers book and pay while you sleep. Stripe handles payments, reservations are held automatically.
+          </p>
+        </div>
       </section>
 
       {/* Featured */}

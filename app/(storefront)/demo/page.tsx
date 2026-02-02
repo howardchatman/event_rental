@@ -103,9 +103,10 @@ export default function CustomerDemoPage() {
     <div className="mx-auto max-w-5xl">
       {/* Header */}
       <div className="mb-6 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
-        <h1 className="text-2xl font-bold">Interactive Customer Demo</h1>
+        <p className="mb-1 text-sm font-medium text-indigo-200">Built for Lolita Harris</p>
+        <h1 className="text-2xl font-bold">See How Your Customers Will Book</h1>
         <p className="mt-1 text-indigo-100">
-          Click through the full customer journey — no account needed.
+          Click through the full customer journey &mdash; this is what your clients experience when they rent from you online. No phone calls, no back-and-forth. They browse, pick dates, and pay &mdash; while you focus on growing your business.
         </p>
       </div>
 

@@ -170,7 +170,7 @@ function generateBotResponse(userMsg: string, conversationHistory: Message[]): {
   // Greeting
   if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey") || msg === "help") {
     return {
-      text: `Hey! I'm your EventRental assistant. I can help with:\n\n` +
+      text: `Hey Lolita! I'm here to make running your rental business easier. Here's what I can do:\n\n` +
         `• 📦 **Inventory** — Check availability, stock levels\n` +
         `• 📅 **Appointments** — Schedule site visits, consultations\n` +
         `• 💼 **Leads** — Track prospects, draft follow-ups\n` +
@@ -201,7 +201,7 @@ export default function AdminChatBot() {
     {
       id: "welcome",
       role: "bot",
-      text: "Hey! I'm your EventRental assistant. I can check availability, schedule appointments, follow up on leads, suggest upsells, and more. How can I help?",
+      text: "Hey Lolita! I'm your EventRental assistant. I help you run your rental business smoothly — checking inventory, scheduling site visits, following up on leads, and helping close sales. What can I help with today?",
       timestamp: new Date(),
     },
   ]);
