@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "EventRental – Lolita Harris Event Rentals",
-  description: "The complete event rental platform for Lolita Harris. Browse and rent tables, chairs, tents, lighting, and more.",
+  title: "Lolita Harris Event Rentals – Elegant Wedding & Event Rentals",
+  description:
+    "Curated wedding and event rentals by Lolita Harris. Browse chairs, tables, linens, arches, and tabletop decor for your perfect celebration.",
 };
 
 export default function RootLayout({
@@ -26,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
+        className={`${playfair.variable} ${inter.variable} antialiased bg-ivory text-charcoal`}
       >
         {children}
         <Toaster position="top-right" />
