@@ -10,8 +10,8 @@ const images = [
     span: "",
   },
   {
-    src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-    alt: "Linen-draped table setting",
+    src: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80",
+    alt: "Festive party table with decorations",
     span: "",
   },
   {
