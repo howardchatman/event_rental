@@ -77,6 +77,38 @@ export default async function HomePage() {
 
       <Testimonials />
 
+      {/* AI Assistant Banner */}
+      <section className="bg-charcoal py-16">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <p className="mb-2 font-body text-sm uppercase tracking-[0.2em] text-champagne-light">
+            24/7 AI Concierge
+          </p>
+          <h2 className="text-3xl font-light text-white sm:text-4xl">
+            Need help planning your event?
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl font-body text-sm text-white/60">
+            Our AI assistant is available around the clock to answer questions
+            about rentals, pricing, availability, and delivery. Chat with us
+            online or call our AI voice line anytime.
+          </p>
+          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <a
+              href="tel:2815550199"
+              className="inline-flex items-center gap-3 bg-champagne px-8 py-4 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors duration-300 hover:bg-champagne-dark"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              Call (281) 555-0199
+            </a>
+            <span className="font-body text-sm text-white/40">or use the chat bubble below</span>
+          </div>
+          <p className="mt-4 font-body text-xs text-white/30">
+            Powered by Retell AI
+          </p>
+        </div>
+      </section>
+
       {/* Footer CTA */}
       <section className="bg-ivory py-20">
         <div className="mx-auto max-w-3xl px-6 text-center">
