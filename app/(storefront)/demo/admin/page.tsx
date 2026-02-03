@@ -22,7 +22,7 @@ const MOCK_ORDERS = [
   { id: "ord-q7r8s9t0", customer: "anna@example.com", status: "cancelled", event_date_start: "2026-03-01", event_date_end: "2026-03-01", total_cents: 32500, items_count: 1 },
 ];
 
-type AdminTab = "dashboard" | "products" | "orders" | "calendar";
+type AdminTab = "dashboard" | "products" | "orders" | "calendar" | "appointments" | "leads" | "customers" | "proposals" | "invoices" | "vendors";
 
 const statusColors: Record<string, string> = {
   pending_payment: "bg-amber-50 text-amber-700",
@@ -44,11 +44,17 @@ export default function AdminDemoPage() {
   const [selectedOrder, setSelectedOrder] = useState<typeof MOCK_ORDERS[0] | null>(null);
   const [editingProduct, setEditingProduct] = useState<typeof MOCK_PRODUCTS[0] | null>(null);
 
-  const tabs: { key: AdminTab; label: string }[] = [
-    { key: "dashboard", label: "Dashboard" },
-    { key: "products", label: "Products" },
-    { key: "orders", label: "Orders" },
-    { key: "calendar", label: "Calendar" },
+  const tabs: { key: AdminTab; label: string; icon: string }[] = [
+    { key: "dashboard", label: "Dashboard", icon: "📊" },
+    { key: "products", label: "Products", icon: "📦" },
+    { key: "orders", label: "Orders", icon: "🧾" },
+    { key: "calendar", label: "Calendar", icon: "📅" },
+    { key: "appointments", label: "Appointments", icon: "🤝" },
+    { key: "leads", label: "Sales Leads", icon: "💼" },
+    { key: "customers", label: "Customers", icon: "👥" },
+    { key: "proposals", label: "Proposals", icon: "📝" },
+    { key: "invoices", label: "Invoices", icon: "💵" },
+    { key: "vendors", label: "Vendors", icon: "🏪" },
   ];
 
   const paidOrders = MOCK_ORDERS.filter((o) => o.status !== "cancelled" && o.status !== "pending_payment");
@@ -94,10 +100,11 @@ export default function AdminDemoPage() {
               <button
                 key={t.key}
                 onClick={() => { setTab(t.key); setSelectedOrder(null); setEditingProduct(null); }}
-                className={`block w-full px-3 py-2.5 text-left font-body text-sm font-medium transition ${
+                className={`flex w-full items-center gap-2 px-3 py-2.5 text-left font-body text-sm font-medium transition ${
                   tab === t.key ? "bg-champagne/10 text-champagne" : "text-charcoal-light hover:bg-ivory-dark"
                 }`}
               >
+                <span>{t.icon}</span>
                 {t.label}
               </button>
             ))}
@@ -364,6 +371,341 @@ export default function AdminDemoPage() {
                     <span className="text-warm-gray">{status}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── APPOINTMENTS ───────────────────────────────────── */}
+          {tab === "appointments" && (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-light text-charcoal">Appointments</h2>
+                <button className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark">
+                  + Schedule Appointment
+                </button>
+              </div>
+              <div className="overflow-x-auto border border-ivory-dark">
+                <table className="min-w-full divide-y divide-ivory-dark">
+                  <thead className="bg-ivory">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Client</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Type</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Date</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ivory-dark">
+                    {[
+                      { client: "Sarah Johnson", type: "Site Visit", date: "Mar 10, 2026", status: "confirmed" },
+                      { client: "Michael Chen", type: "Consultation", date: "Mar 12, 2026", status: "scheduled" },
+                      { client: "Emily Davis", type: "Delivery", date: "Mar 15, 2026", status: "scheduled" },
+                    ].map((apt, i) => (
+                      <tr key={i} className="hover:bg-ivory">
+                        <td className="px-4 py-2.5 font-body text-sm font-medium text-charcoal">{apt.client}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{apt.type}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{apt.date}</td>
+                        <td className="px-4 py-2.5">
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${apt.status === "confirmed" ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"}`}>
+                            {apt.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── SALES LEADS ────────────────────────────────────── */}
+          {tab === "leads" && (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-light text-charcoal">Sales Leads</h2>
+                <button className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark">
+                  + Add Lead
+                </button>
+              </div>
+              <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Pipeline Value</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">$45,800</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Active Leads</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">12</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Won This Month</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-green-600">$18,500</p>
+                </div>
+              </div>
+              <div className="overflow-x-auto border border-ivory-dark">
+                <table className="min-w-full divide-y divide-ivory-dark">
+                  <thead className="bg-ivory">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Lead</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Event Type</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Est. Value</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ivory-dark">
+                    {[
+                      { name: "Jennifer Smith", event: "Wedding", value: 12500, status: "hot" },
+                      { name: "Corporate Solutions Inc", event: "Corporate Event", value: 8500, status: "warm" },
+                      { name: "Martinez Family", event: "Quinceañera", value: 4800, status: "new" },
+                    ].map((lead, i) => (
+                      <tr key={i} className="hover:bg-ivory">
+                        <td className="px-4 py-2.5 font-body text-sm font-medium text-charcoal">{lead.name}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{lead.event}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal">{formatCents(lead.value * 100)}</td>
+                        <td className="px-4 py-2.5">
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                            lead.status === "hot" ? "bg-red-50 text-red-700" :
+                            lead.status === "warm" ? "bg-amber-50 text-amber-700" : "bg-blue-50 text-blue-700"
+                          }`}>
+                            {lead.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── CUSTOMERS ──────────────────────────────────────── */}
+          {tab === "customers" && (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-light text-charcoal">Customers</h2>
+                <button className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark">
+                  + Add Customer
+                </button>
+              </div>
+              <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Total Customers</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">156</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Total Revenue</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">$284,500</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Avg. Lifetime Value</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">$1,824</p>
+                </div>
+              </div>
+              <div className="overflow-x-auto border border-ivory-dark">
+                <table className="min-w-full divide-y divide-ivory-dark">
+                  <thead className="bg-ivory">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Customer</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Email</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Phone</th>
+                      <th className="px-4 py-2.5 text-right font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Total Spent</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ivory-dark">
+                    {[
+                      { name: "Sarah Johnson", email: "sarah@example.com", phone: "(281) 555-0123", spent: 12780 },
+                      { name: "Michael Chen", email: "mike@example.com", phone: "(281) 555-0456", spent: 23500 },
+                      { name: "Emily Davis", email: "emily@example.com", phone: "(281) 555-0789", spent: 5250 },
+                    ].map((customer, i) => (
+                      <tr key={i} className="hover:bg-ivory">
+                        <td className="px-4 py-2.5">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-champagne/20 text-xs font-medium text-champagne">
+                              {customer.name.split(" ").map(n => n[0]).join("")}
+                            </div>
+                            <span className="font-body text-sm font-medium text-charcoal">{customer.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{customer.email}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{customer.phone}</td>
+                        <td className="px-4 py-2.5 text-right font-body text-sm font-medium text-charcoal">{formatCents(customer.spent * 100)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── PROPOSALS ──────────────────────────────────────── */}
+          {tab === "proposals" && (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-light text-charcoal">Proposals</h2>
+                <button className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark">
+                  + New Proposal
+                </button>
+              </div>
+              <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Pipeline Value</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">$32,400</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Accepted Value</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-green-600">$18,750</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Conversion Rate</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">58%</p>
+                </div>
+              </div>
+              <div className="overflow-x-auto border border-ivory-dark">
+                <table className="min-w-full divide-y divide-ivory-dark">
+                  <thead className="bg-ivory">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Proposal</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Customer</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Event Date</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Status</th>
+                      <th className="px-4 py-2.5 text-right font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ivory-dark">
+                    {[
+                      { title: "Smith Wedding Reception", customer: "Sarah Smith", date: "Apr 15, 2026", status: "sent", value: 12500 },
+                      { title: "Corporate Gala 2026", customer: "Acme Corp", date: "May 20, 2026", status: "accepted", value: 18750 },
+                      { title: "Martinez Quinceañera", customer: "Rosa Martinez", date: "Jun 5, 2026", status: "draft", value: 6400 },
+                    ].map((proposal, i) => (
+                      <tr key={i} className="hover:bg-ivory">
+                        <td className="px-4 py-2.5">
+                          <span className="font-body text-sm font-medium text-charcoal">{proposal.title}</span>
+                        </td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{proposal.customer}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{proposal.date}</td>
+                        <td className="px-4 py-2.5">
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                            proposal.status === "accepted" ? "bg-green-50 text-green-700" :
+                            proposal.status === "sent" ? "bg-blue-50 text-blue-700" : "bg-gray-100 text-gray-600"
+                          }`}>
+                            {proposal.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 text-right font-body text-sm font-medium text-charcoal">{formatCents(proposal.value * 100)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── INVOICES ───────────────────────────────────────── */}
+          {tab === "invoices" && (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-light text-charcoal">Invoices</h2>
+                <button className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark">
+                  + New Invoice
+                </button>
+              </div>
+              <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Outstanding</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-charcoal">$8,450</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Overdue</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-red-600">$2,350</p>
+                </div>
+                <div className="border border-ivory-dark p-4">
+                  <p className="font-body text-xs uppercase tracking-wider text-warm-gray">Paid This Month</p>
+                  <p className="mt-1 font-heading text-2xl font-light text-green-600">$24,800</p>
+                </div>
+              </div>
+              <div className="overflow-x-auto border border-ivory-dark">
+                <table className="min-w-full divide-y divide-ivory-dark">
+                  <thead className="bg-ivory">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Invoice</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Customer</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Due Date</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Status</th>
+                      <th className="px-4 py-2.5 text-right font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ivory-dark">
+                    {[
+                      { number: "INV-202603-0012", customer: "Sarah Johnson", due: "Mar 15, 2026", status: "paid", amount: 12780 },
+                      { number: "INV-202603-0013", customer: "Michael Chen", due: "Mar 20, 2026", status: "sent", amount: 23500 },
+                      { number: "INV-202602-0011", customer: "Tom Williams", due: "Feb 28, 2026", status: "overdue", amount: 8900 },
+                    ].map((invoice, i) => (
+                      <tr key={i} className="hover:bg-ivory">
+                        <td className="px-4 py-2.5 font-mono text-sm text-charcoal">{invoice.number}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{invoice.customer}</td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{invoice.due}</td>
+                        <td className="px-4 py-2.5">
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                            invoice.status === "paid" ? "bg-green-50 text-green-700" :
+                            invoice.status === "overdue" ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-700"
+                          }`}>
+                            {invoice.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 text-right font-body text-sm font-medium text-charcoal">{formatCents(invoice.amount * 100)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── VENDORS ────────────────────────────────────────── */}
+          {tab === "vendors" && (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-light text-charcoal">Vendors</h2>
+                <button className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark">
+                  + Add Vendor
+                </button>
+              </div>
+              <div className="overflow-x-auto border border-ivory-dark">
+                <table className="min-w-full divide-y divide-ivory-dark">
+                  <thead className="bg-ivory">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Vendor</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Category</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Contact</th>
+                      <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ivory-dark">
+                    {[
+                      { name: "Bella Flora Designs", category: "Florist", contact: "Maria Garcia", status: "active" },
+                      { name: "Elite Catering Co.", category: "Caterer", contact: "James Wilson", status: "active" },
+                      { name: "Capture the Moment", category: "Photographer", contact: "Lisa Chen", status: "active" },
+                      { name: "DJ Smooth Beats", category: "DJ", contact: "Marcus Brown", status: "inactive" },
+                    ].map((vendor, i) => (
+                      <tr key={i} className="hover:bg-ivory">
+                        <td className="px-4 py-2.5">
+                          <span className="font-body text-sm font-medium text-charcoal">{vendor.name}</span>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                            vendor.category === "Florist" ? "bg-pink-50 text-pink-700" :
+                            vendor.category === "Caterer" ? "bg-orange-50 text-orange-700" :
+                            vendor.category === "Photographer" ? "bg-purple-50 text-purple-700" : "bg-blue-50 text-blue-700"
+                          }`}>
+                            {vendor.category}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 font-body text-sm text-charcoal-light">{vendor.contact}</td>
+                        <td className="px-4 py-2.5">
+                          <span className={`inline-block h-2.5 w-2.5 rounded-full ${vendor.status === "active" ? "bg-green-500" : "bg-warm-gray-light"}`} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
