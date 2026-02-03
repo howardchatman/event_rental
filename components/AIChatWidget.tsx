@@ -86,12 +86,23 @@ export default function AIChatWidget() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 flex h-[500px] w-[380px] flex-col overflow-hidden rounded-lg border border-ivory-dark bg-white shadow-2xl">
+        <div className="fixed inset-x-0 bottom-0 z-50 flex h-[100dvh] w-full flex-col overflow-hidden border border-ivory-dark bg-white shadow-2xl sm:inset-x-auto sm:bottom-24 sm:right-6 sm:h-[500px] sm:w-[380px] sm:rounded-lg">
           {/* Header */}
           <div className="flex items-center justify-between bg-champagne px-5 py-4">
-            <div>
-              <h3 className="font-heading text-base font-medium text-white">AI Assistant</h3>
-              <p className="font-body text-xs text-white/70">Powered by Retell AI</p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/30 sm:hidden"
+                aria-label="Close chat"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div>
+                <h3 className="font-heading text-base font-medium text-white">AI Assistant</h3>
+                <p className="font-body text-xs text-white/70">Powered by Retell AI</p>
+              </div>
             </div>
             <a
               href={`tel:${AI_PHONE_NUMBER.replace(/[^\d]/g, "")}`}
