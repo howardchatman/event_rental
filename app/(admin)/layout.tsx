@@ -11,6 +11,10 @@ const navItems = [
   { href: "/admin/calendar", label: "Calendar", icon: "📅" },
   { href: "/admin/appointments", label: "Appointments", icon: "🤝" },
   { href: "/admin/leads", label: "Sales Leads", icon: "💼" },
+  { href: "/admin/customers", label: "Customers", icon: "👥" },
+  { href: "/admin/proposals", label: "Proposals", icon: "📝" },
+  { href: "/admin/invoices", label: "Invoices", icon: "💵" },
+  { href: "/admin/vendors", label: "Vendors", icon: "🏪" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
