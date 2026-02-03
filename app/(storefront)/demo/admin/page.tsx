@@ -100,6 +100,11 @@ export default function AdminDemoPage() {
   const [tab, setTab] = useState<AdminTab>("dashboard");
   const [selectedOrder, setSelectedOrder] = useState<typeof MOCK_ORDERS[0] | null>(null);
   const [editingProduct, setEditingProduct] = useState<typeof MOCK_PRODUCTS[0] | null>(null);
+  const [showInvoicePreview, setShowInvoicePreview] = useState(false);
+  const [showProposalPreview, setShowProposalPreview] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState<{ name: string; category: string; contact: string; email: string; phone: string; notes: string; status: string } | null>(null);
+  const [showAddVendor, setShowAddVendor] = useState(false);
+  const [newVendor, setNewVendor] = useState({ name: "", category: "Florist", contact: "", email: "", phone: "", notes: "" });
 
   const tabs: { key: AdminTab; label: string; icon: string }[] = [
     { key: "dashboard", label: "Dashboard", icon: "dashboard" },
@@ -656,7 +661,7 @@ export default function AdminDemoPage() {
           )}
 
           {/* ── INVOICES ───────────────────────────────────────── */}
-          {tab === "invoices" && (
+          {tab === "invoices" && !showInvoicePreview && (
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-heading text-2xl font-light text-charcoal">Invoices</h2>
@@ -687,6 +692,7 @@ export default function AdminDemoPage() {
                       <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Due Date</th>
                       <th className="px-4 py-2.5 text-left font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Status</th>
                       <th className="px-4 py-2.5 text-right font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Amount</th>
+                      <th className="px-4 py-2.5 text-right font-body text-xs font-semibold uppercase tracking-wider text-warm-gray">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-ivory-dark">
@@ -708,6 +714,14 @@ export default function AdminDemoPage() {
                           </span>
                         </td>
                         <td className="px-4 py-2.5 text-right font-body text-sm font-medium text-charcoal">{formatCents(invoice.amount * 100)}</td>
+                        <td className="px-4 py-2.5 text-right">
+                          <button
+                            onClick={() => setShowInvoicePreview(true)}
+                            className="font-body text-xs font-medium text-champagne hover:text-champagne-dark"
+                          >
+                            View / PDF
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -716,12 +730,145 @@ export default function AdminDemoPage() {
             </div>
           )}
 
+          {/* ── INVOICE PREVIEW (PDF-style) ─────────────────────── */}
+          {tab === "invoices" && showInvoicePreview && (
+            <div>
+              <button onClick={() => setShowInvoicePreview(false)} className="mb-4 font-body text-sm text-champagne hover:text-champagne-dark">&larr; Back to Invoices</button>
+
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-2xl font-light text-charcoal">Invoice Preview</h2>
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 border border-champagne px-4 py-2 font-body text-sm font-medium text-champagne transition-colors hover:bg-champagne/10">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Download PDF
+                  </button>
+                  <button className="flex items-center gap-2 bg-champagne px-4 py-2 font-body text-sm font-medium text-white transition-colors hover:bg-champagne-dark">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                    </svg>
+                    Email to Customer
+                  </button>
+                </div>
+              </div>
+
+              {/* PDF-style Invoice */}
+              <div className="mx-auto max-w-2xl border border-gray-200 bg-white p-8 shadow-lg">
+                {/* Header */}
+                <div className="mb-8 flex items-start justify-between">
+                  <div>
+                    <h1 className="font-heading text-2xl text-charcoal">Lolita Harris</h1>
+                    <p className="font-body text-xs uppercase tracking-[0.15em] text-champagne">Event Rentals</p>
+                    <p className="mt-3 font-body text-sm text-warm-gray">123 Main Street</p>
+                    <p className="font-body text-sm text-warm-gray">Houston, TX 77001</p>
+                    <p className="font-body text-sm text-warm-gray">(281) 555-0199</p>
+                  </div>
+                  <div className="text-right">
+                    <h2 className="font-heading text-3xl font-light text-charcoal">INVOICE</h2>
+                    <p className="mt-2 font-mono text-sm text-charcoal">INV-202603-0012</p>
+                    <p className="mt-4 font-body text-sm text-warm-gray">Issue Date: March 1, 2026</p>
+                    <p className="font-body text-sm text-warm-gray">Due Date: March 15, 2026</p>
+                  </div>
+                </div>
+
+                {/* Bill To */}
+                <div className="mb-8 border-t border-gray-200 pt-6">
+                  <p className="mb-2 font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Bill To</p>
+                  <p className="font-body text-sm font-medium text-charcoal">Sarah Johnson</p>
+                  <p className="font-body text-sm text-warm-gray">sarah@example.com</p>
+                  <p className="font-body text-sm text-warm-gray">(281) 555-0123</p>
+                </div>
+
+                {/* Event Details */}
+                <div className="mb-6 rounded bg-ivory p-4">
+                  <p className="font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Event Details</p>
+                  <p className="mt-1 font-body text-sm text-charcoal">Smith Wedding Reception</p>
+                  <p className="font-body text-sm text-warm-gray">April 15, 2026 &bull; The Grand Ballroom, Houston</p>
+                </div>
+
+                {/* Line Items */}
+                <table className="mb-6 w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="py-2 text-left font-body text-xs font-semibold uppercase tracking-[0.1em] text-warm-gray">Description</th>
+                      <th className="py-2 text-center font-body text-xs font-semibold uppercase tracking-[0.1em] text-warm-gray">Qty</th>
+                      <th className="py-2 text-right font-body text-xs font-semibold uppercase tracking-[0.1em] text-warm-gray">Unit Price</th>
+                      <th className="py-2 text-right font-body text-xs font-semibold uppercase tracking-[0.1em] text-warm-gray">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    <tr>
+                      <td className="py-3 font-body text-sm text-charcoal">Gold Chiavari Chairs (2-day rental)</td>
+                      <td className="py-3 text-center font-body text-sm text-charcoal">100</td>
+                      <td className="py-3 text-right font-body text-sm text-charcoal">$8.00</td>
+                      <td className="py-3 text-right font-body text-sm font-medium text-charcoal">$800.00</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-body text-sm text-charcoal">60&quot; Round Tables (2-day rental)</td>
+                      <td className="py-3 text-center font-body text-sm text-charcoal">10</td>
+                      <td className="py-3 text-right font-body text-sm text-charcoal">$15.00</td>
+                      <td className="py-3 text-right font-body text-sm font-medium text-charcoal">$150.00</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-body text-sm text-charcoal">White Satin Tablecloths</td>
+                      <td className="py-3 text-center font-body text-sm text-charcoal">10</td>
+                      <td className="py-3 text-right font-body text-sm text-charcoal">$15.00</td>
+                      <td className="py-3 text-right font-body text-sm font-medium text-charcoal">$150.00</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-body text-sm text-charcoal">Delivery &amp; Setup</td>
+                      <td className="py-3 text-center font-body text-sm text-charcoal">1</td>
+                      <td className="py-3 text-right font-body text-sm text-charcoal">$150.00</td>
+                      <td className="py-3 text-right font-body text-sm font-medium text-charcoal">$150.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                {/* Totals */}
+                <div className="border-t border-gray-200 pt-4">
+                  <div className="flex justify-end">
+                    <div className="w-64 space-y-2">
+                      <div className="flex justify-between font-body text-sm">
+                        <span className="text-warm-gray">Subtotal</span>
+                        <span className="text-charcoal">$1,250.00</span>
+                      </div>
+                      <div className="flex justify-between font-body text-sm">
+                        <span className="text-warm-gray">Tax (8.25%)</span>
+                        <span className="text-charcoal">$103.13</span>
+                      </div>
+                      <div className="flex justify-between border-t border-gray-200 pt-2 font-body text-base font-semibold">
+                        <span className="text-charcoal">Total Due</span>
+                        <span className="text-charcoal">$1,353.13</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Payment Info */}
+                <div className="mt-8 border-t border-gray-200 pt-6">
+                  <p className="font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Payment Information</p>
+                  <p className="mt-2 font-body text-sm text-warm-gray">Please make payment by the due date. We accept credit cards, checks, and bank transfers.</p>
+                  <p className="mt-1 font-body text-sm text-warm-gray">Questions? Contact us at hello@lolitaharris.com</p>
+                </div>
+
+                {/* Footer */}
+                <div className="mt-8 border-t border-gray-200 pt-4 text-center">
+                  <p className="font-body text-xs text-warm-gray">Thank you for choosing Lolita Harris Event Rentals</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* ── VENDORS ────────────────────────────────────────── */}
-          {tab === "vendors" && (
+          {tab === "vendors" && !selectedVendor && !showAddVendor && (
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-heading text-2xl font-light text-charcoal">Vendors</h2>
-                <button className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark">
+                <button
+                  onClick={() => setShowAddVendor(true)}
+                  className="bg-champagne px-4 py-2 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark"
+                >
                   + Add Vendor
                 </button>
               </div>
@@ -737,12 +884,16 @@ export default function AdminDemoPage() {
                   </thead>
                   <tbody className="divide-y divide-ivory-dark">
                     {[
-                      { name: "Bella Flora Designs", category: "Florist", contact: "Maria Garcia", status: "active" },
-                      { name: "Elite Catering Co.", category: "Caterer", contact: "James Wilson", status: "active" },
-                      { name: "Capture the Moment", category: "Photographer", contact: "Lisa Chen", status: "active" },
-                      { name: "DJ Smooth Beats", category: "DJ", contact: "Marcus Brown", status: "inactive" },
+                      { name: "Bella Flora Designs", category: "Florist", contact: "Maria Garcia", email: "maria@bellaflora.com", phone: "(281) 555-0111", notes: "Specializes in luxury wedding arrangements. 10% discount for referrals.", status: "active" },
+                      { name: "Elite Catering Co.", category: "Caterer", contact: "James Wilson", email: "james@elitecatering.com", phone: "(281) 555-0222", notes: "Full-service catering. Minimum 50 guests.", status: "active" },
+                      { name: "Capture the Moment", category: "Photographer", contact: "Lisa Chen", email: "lisa@capturethemoment.com", phone: "(281) 555-0333", notes: "Award-winning wedding photographer. Book 6 months in advance.", status: "active" },
+                      { name: "DJ Smooth Beats", category: "DJ", contact: "Marcus Brown", email: "marcus@smoothbeats.com", phone: "(281) 555-0444", notes: "On hiatus until June 2026.", status: "inactive" },
                     ].map((vendor, i) => (
-                      <tr key={i} className="hover:bg-ivory">
+                      <tr
+                        key={i}
+                        onClick={() => setSelectedVendor(vendor)}
+                        className="cursor-pointer hover:bg-ivory"
+                      >
                         <td className="px-4 py-2.5">
                           <span className="font-body text-sm font-medium text-charcoal">{vendor.name}</span>
                         </td>
@@ -763,6 +914,162 @@ export default function AdminDemoPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── VENDOR DETAIL VIEW ─────────────────────────────── */}
+          {tab === "vendors" && selectedVendor && !showAddVendor && (
+            <div>
+              <button onClick={() => setSelectedVendor(null)} className="mb-4 font-body text-sm text-champagne hover:text-champagne-dark">&larr; Back to Vendors</button>
+
+              <div className="flex gap-6">
+                <div className="flex-1">
+                  <div className="mb-6 flex items-start justify-between">
+                    <div>
+                      <h2 className="font-heading text-2xl font-light text-charcoal">{selectedVendor.name}</h2>
+                      <span className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                        selectedVendor.category === "Florist" ? "bg-pink-50 text-pink-700" :
+                        selectedVendor.category === "Caterer" ? "bg-orange-50 text-orange-700" :
+                        selectedVendor.category === "Photographer" ? "bg-purple-50 text-purple-700" : "bg-blue-50 text-blue-700"
+                      }`}>
+                        {selectedVendor.category}
+                      </span>
+                    </div>
+                    <span className={`rounded-full px-3 py-1 text-xs font-medium ${selectedVendor.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+                      {selectedVendor.status === "active" ? "Active" : "Inactive"}
+                    </span>
+                  </div>
+
+                  <div className="space-y-4 border border-ivory-dark bg-white p-6">
+                    <div>
+                      <p className="font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Contact Person</p>
+                      <p className="mt-1 font-body text-sm text-charcoal">{selectedVendor.contact}</p>
+                    </div>
+                    <div>
+                      <p className="font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Email</p>
+                      <a href={`mailto:${selectedVendor.email}`} className="mt-1 block font-body text-sm text-champagne hover:text-champagne-dark">{selectedVendor.email}</a>
+                    </div>
+                    <div>
+                      <p className="font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Phone</p>
+                      <a href={`tel:${selectedVendor.phone}`} className="mt-1 block font-body text-sm text-champagne hover:text-champagne-dark">{selectedVendor.phone}</a>
+                    </div>
+                    <div>
+                      <p className="font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Notes</p>
+                      <p className="mt-1 font-body text-sm text-charcoal-light">{selectedVendor.notes}</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex gap-3">
+                    <button className="border border-champagne px-4 py-2 font-body text-sm font-medium text-champagne transition-colors hover:bg-champagne/10">
+                      Edit Vendor
+                    </button>
+                    <button className="border border-red-200 px-4 py-2 font-body text-sm font-medium text-red-600 transition-colors hover:bg-red-50">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── ADD VENDOR FORM ────────────────────────────────── */}
+          {tab === "vendors" && showAddVendor && (
+            <div>
+              <button onClick={() => { setShowAddVendor(false); setNewVendor({ name: "", category: "Florist", contact: "", email: "", phone: "", notes: "" }); }} className="mb-4 font-body text-sm text-champagne hover:text-champagne-dark">&larr; Back to Vendors</button>
+
+              <h2 className="mb-6 font-heading text-2xl font-light text-charcoal">Add New Vendor</h2>
+
+              <div className="max-w-lg space-y-4">
+                <div>
+                  <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Vendor Name *</label>
+                  <input
+                    type="text"
+                    value={newVendor.name}
+                    onChange={(e) => setNewVendor({ ...newVendor, name: e.target.value })}
+                    className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none"
+                    placeholder="e.g., Bella Flora Designs"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Category *</label>
+                  <select
+                    value={newVendor.category}
+                    onChange={(e) => setNewVendor({ ...newVendor, category: e.target.value })}
+                    className="w-full border border-ivory-dark bg-white px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none"
+                  >
+                    <option value="Florist">Florist</option>
+                    <option value="Caterer">Caterer</option>
+                    <option value="Photographer">Photographer</option>
+                    <option value="DJ">DJ / Entertainment</option>
+                    <option value="Planner">Event Planner</option>
+                    <option value="Rental Partner">Rental Partner</option>
+                    <option value="Transport">Transport / Delivery</option>
+                    <option value="Staffing">Staffing</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Contact Person</label>
+                  <input
+                    type="text"
+                    value={newVendor.contact}
+                    onChange={(e) => setNewVendor({ ...newVendor, contact: e.target.value })}
+                    className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none"
+                    placeholder="e.g., Maria Garcia"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Email</label>
+                    <input
+                      type="email"
+                      value={newVendor.email}
+                      onChange={(e) => setNewVendor({ ...newVendor, email: e.target.value })}
+                      className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none"
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Phone</label>
+                    <input
+                      type="tel"
+                      value={newVendor.phone}
+                      onChange={(e) => setNewVendor({ ...newVendor, phone: e.target.value })}
+                      className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none"
+                      placeholder="(281) 555-0000"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1 block font-body text-xs font-semibold uppercase tracking-[0.15em] text-warm-gray">Notes</label>
+                  <textarea
+                    value={newVendor.notes}
+                    onChange={(e) => setNewVendor({ ...newVendor, notes: e.target.value })}
+                    rows={3}
+                    className="w-full border border-ivory-dark px-4 py-2.5 font-body text-sm text-charcoal focus:border-champagne focus:outline-none"
+                    placeholder="Any additional notes about this vendor..."
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => { setShowAddVendor(false); setNewVendor({ name: "", category: "Florist", contact: "", email: "", phone: "", notes: "" }); }}
+                    className="bg-champagne px-5 py-2.5 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark"
+                  >
+                    Save Vendor
+                  </button>
+                  <button
+                    onClick={() => { setShowAddVendor(false); setNewVendor({ name: "", category: "Florist", contact: "", email: "", phone: "", notes: "" }); }}
+                    className="border border-ivory-dark px-5 py-2.5 font-body text-sm text-charcoal-light transition-colors hover:border-champagne"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}
