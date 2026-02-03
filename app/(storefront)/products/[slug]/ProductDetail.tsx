@@ -140,15 +140,28 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           )}
 
           <div className="mt-8 space-y-6 border border-ivory-dark bg-white p-6">
-            <div>
-              <h3 className="mb-3 font-body text-xs font-semibold uppercase tracking-[0.15em] text-charcoal-light">
-                Rental Dates
-              </h3>
+            {/* Date Selection - Highlighted when empty */}
+            <div className={`rounded-lg p-4 transition-colors ${!startDate || !endDate ? "bg-champagne/10 ring-2 ring-champagne/30" : "bg-transparent"}`}>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-body text-xs font-semibold uppercase tracking-[0.15em] text-charcoal-light">
+                  Rental Dates
+                </h3>
+                {(!startDate || !endDate) && (
+                  <span className="inline-flex items-center rounded-full bg-champagne px-2 py-0.5 text-[10px] font-medium text-white">
+                    Required
+                  </span>
+                )}
+              </div>
               <DateRangePicker
                 startDate={startDate}
                 endDate={endDate}
                 onChange={(s, e) => setDates(s, e)}
               />
+              {(!startDate || !endDate) && (
+                <p className="mt-3 font-body text-xs text-champagne-dark">
+                  Please select your event dates to check availability and add to cart
+                </p>
+              )}
             </div>
 
             {checking && (
@@ -176,7 +189,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               disabled={!startDate || !endDate || (available !== null && available < qty)}
               className="w-full bg-champagne py-3.5 font-body text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-champagne-dark disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Add to Cart
+              {!startDate || !endDate ? "Select Dates to Add to Cart" : "Add to Cart"}
             </button>
           </div>
         </div>
