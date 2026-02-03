@@ -103,9 +103,6 @@ export default async function HomePage() {
             </a>
             <span className="font-body text-sm text-white/40">or use the chat bubble below</span>
           </div>
-          <p className="mt-4 font-body text-xs text-white/30">
-            Powered by Retell AI
-          </p>
         </div>
       </section>
 

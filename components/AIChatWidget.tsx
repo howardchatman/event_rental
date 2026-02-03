@@ -16,23 +16,246 @@ interface Message {
   text: string;
 }
 
-const MOCK_RESPONSES: Record<string, string> = {
-  "what rental packages do you offer?":
-    "We offer three curated packages:\n\n• **Essentials** — Tables, chairs, and basic linens starting at $500\n• **Elegance** — Full table settings with premium linens, centerpieces, and chair sashes starting at $1,200\n• **Grand Celebration** — Complete event styling including arches, uplighting, and tabletop decor starting at $2,500\n\nAll packages include delivery, setup, and pickup. Would you like details on any of these?",
-  "do you deliver to my area?":
-    "We deliver throughout the greater metropolitan area within a 50-mile radius. Delivery fees start at $75 and vary by distance. Just share your event zip code and I can give you an exact quote!",
-  "what's your cancellation policy?":
-    "We understand plans change! Here's our policy:\n\n• **30+ days before event** — Full refund\n• **15–29 days** — 50% refund\n• **Under 15 days** — No refund, but you can reschedule once\n\nWould you like to proceed with a booking?",
-  "i need help choosing items for my event.":
-    "I'd love to help! To give you the best recommendations, could you tell me:\n\n1. What type of event? (wedding, birthday, corporate, etc.)\n2. Approximate guest count?\n3. Indoor or outdoor?\n4. Do you have a color scheme or theme in mind?\n\nWith those details, I can suggest the perfect combination of rentals!",
-};
+interface Response {
+  text: string;
+  followUps: string[];
+}
 
-function getResponse(input: string): string {
+// Keyword-based matching: each entry has keywords to match and a response
+const RESPONSES: { keywords: string[]; response: Response }[] = [
+  // ── Packages ──
+  {
+    keywords: ["package", "packages", "bundle", "bundles", "deal"],
+    response: {
+      text: "We offer three curated packages:\n\n• **Essentials** — Tables, chairs, and basic linens starting at $500\n• **Elegance** — Full table settings with premium linens, centerpieces, and chair sashes starting at $1,200\n• **Grand Celebration** — Complete event styling including arches, uplighting, and tabletop decor starting at $2,500\n\nAll packages include delivery, setup, and pickup. Would you like details on any of these?",
+      followUps: ["Tell me about the Essentials package", "What's included in Grand Celebration?", "Browse the collection", "How do I place an order?"],
+    },
+  },
+  // ── Essentials package ──
+  {
+    keywords: ["essentials"],
+    response: {
+      text: "The **Essentials Package** starts at $500 and includes:\n\n• Round banquet tables (seats 8-10 each)\n• Folding or chiavari chairs\n• Basic white or ivory linens\n• Setup and breakdown\n• Delivery and pickup\n\nPerfect for simple, elegant gatherings. You can add items a la carte too!",
+      followUps: ["What's included in Grand Celebration?", "Can I customize a package?", "Browse the collection"],
+    },
+  },
+  // ── Elegance package ──
+  {
+    keywords: ["elegance"],
+    response: {
+      text: "The **Elegance Package** starts at $1,200 and includes:\n\n• Premium round or rectangular tables\n• Gold or silver chiavari chairs\n• Premium linens with napkins\n• Chair sashes in your color choice\n• Centerpiece bases\n• Full setup, styling, and breakdown\n\nA beautiful upgrade for weddings and formal events!",
+      followUps: ["Tell me about the Essentials package", "What's included in Grand Celebration?", "Can I customize a package?"],
+    },
+  },
+  // ── Grand Celebration ──
+  {
+    keywords: ["grand celebration", "grand"],
+    response: {
+      text: "The **Grand Celebration** starts at $2,500 and is our full-service package:\n\n• Premium tables and chairs\n• Luxury linens with napkins and runners\n• Centerpieces and tabletop decor\n• Ceremony arch or backdrop\n• LED uplighting (set of 10)\n• Full setup, styling, and breakdown\n\nIt's our most popular wedding package!",
+      followUps: ["Can I customize a package?", "How far in advance should I book?", "Browse the collection"],
+    },
+  },
+  // ── Customize ──
+  {
+    keywords: ["customize", "custom", "modify", "change package", "mix and match"],
+    response: {
+      text: "Absolutely! All our packages are fully customizable. You can:\n\n• **Add items** a la carte to any package\n• **Swap items** (e.g., upgrade chairs, change linen colors)\n• **Build your own** from scratch in our collection\n\nJust browse our collection and add what you need, or tell me about your event and I'll recommend the perfect setup!",
+      followUps: ["Browse the collection", "I need help choosing items for my event.", "What rental packages do you offer?"],
+    },
+  },
+  // ── Delivery ──
+  {
+    keywords: ["deliver", "delivery", "shipping", "drop off", "dropoff", "pickup", "pick up"],
+    response: {
+      text: "We deliver throughout the greater Houston metropolitan area within a 50-mile radius. Here's how it works:\n\n• **Delivery fee** starts at $75 (varies by distance)\n• We **deliver and set up** before your event\n• We **pick up and break down** after your event\n• Standard delivery window is 2-4 hours before your event start time\n\nJust share your event zip code and I can give you an exact quote!",
+      followUps: ["What rental packages do you offer?", "How far in advance should I book?", "How do I place an order?"],
+    },
+  },
+  // ── Cancellation ──
+  {
+    keywords: ["cancel", "cancellation", "refund", "reschedule"],
+    response: {
+      text: "We understand plans change! Here's our policy:\n\n• **30+ days before event** — Full refund\n• **15-29 days** — 50% refund\n• **Under 15 days** — No refund, but you can reschedule once\n\nTo cancel or reschedule, just log into your account or contact us.",
+      followUps: ["How do I place an order?", "Where is my account?", "What rental packages do you offer?"],
+    },
+  },
+  // ── Help choosing / event planning ──
+  {
+    keywords: ["help choosing", "help me choose", "recommend", "suggestion", "what should i", "which items", "what do i need"],
+    response: {
+      text: "I'd love to help! To give you the best recommendations, could you tell me:\n\n1. What type of event? (wedding, birthday, corporate, etc.)\n2. Approximate guest count?\n3. Indoor or outdoor?\n4. Do you have a color scheme or theme in mind?\n\nWith those details, I can suggest the perfect combination of rentals!",
+      followUps: ["It's a wedding for 150 guests", "Outdoor birthday party for 50", "Corporate event for 100", "Browse the collection"],
+    },
+  },
+  // ── Wedding ──
+  {
+    keywords: ["wedding"],
+    response: {
+      text: "Congratulations! For weddings, our most popular setup includes:\n\n• **Chiavari chairs** (gold or silver)\n• **Round tables** (60\" seats 8-10)\n• **Premium linens** in ivory or white\n• **Ceremony arch** or backdrop\n• **Centerpieces** and tabletop decor\n• **String lights** or LED uplighting\n\nOur **Grand Celebration** package covers all of this starting at $2,500. Or you can browse individual items in our collection!\n\n-> Browse our collection: /products",
+      followUps: ["What's included in Grand Celebration?", "Browse the collection", "How far in advance should I book?", "Do you deliver to my area?"],
+    },
+  },
+  // ── Birthday ──
+  {
+    keywords: ["birthday", "party"],
+    response: {
+      text: "Happy birthday planning! For birthday parties, we recommend:\n\n• **Tables and chairs** sized to your guest count\n• **Fun linens** in your party colors\n• **A tent or canopy** for outdoor parties\n• **String lights** for evening events\n• **PA system** if you need music/announcements\n\nOur **Essentials Package** at $500 is a great starting point! You can add items as needed.\n\n-> Browse our collection: /products",
+      followUps: ["Tell me about the Essentials package", "Browse the collection", "Do you deliver to my area?"],
+    },
+  },
+  // ── Corporate ──
+  {
+    keywords: ["corporate", "company", "business", "conference", "meeting"],
+    response: {
+      text: "Great choice! For corporate events, we recommend:\n\n• **Rectangular tables** for conference-style seating\n• **Padded folding chairs** for comfort\n• **Clean white or black linens**\n• **PA system** with wireless mic\n• **LED uplighting** in your brand colors\n\nOur **Elegance Package** at $1,200 works perfectly for professional settings.\n\n-> Browse our collection: /products",
+      followUps: ["What rental packages do you offer?", "Browse the collection", "Do you deliver to my area?"],
+    },
+  },
+  // ── Browse / collection ──
+  {
+    keywords: ["browse", "collection", "see items", "view items", "catalog", "inventory", "what do you have", "what do you rent"],
+    response: {
+      text: "You can browse our full collection online! We have:\n\n• **Chairs** — Chiavari, folding, cross-back\n• **Tables** — Round, rectangular, cocktail\n• **Linens** — Tablecloths, napkins, runners, sashes\n• **Arches** — Ceremony backdrops and arches\n• **Tabletop** — Centerpieces, candles, chargers, place settings\n\n-> Browse the collection: /products\n-> See chairs: /products?category=chairs\n-> See tables: /products?category=tables\n-> See linens: /products?category=linens\n-> See arches: /products?category=arches",
+      followUps: ["What rental packages do you offer?", "I need help choosing items for my event.", "How do I place an order?"],
+    },
+  },
+  // ── Order / booking ──
+  {
+    keywords: ["order", "book", "booking", "reserve", "how to order", "place an order"],
+    response: {
+      text: "Ordering is easy!\n\n1. **Browse** our collection at /products\n2. **Select** your rental dates and items\n3. **Add to cart** and choose delivery or pickup\n4. **Checkout** and pay securely with a credit card\n\nYou'll get an instant confirmation email. We handle delivery, setup, and pickup!\n\n-> Start browsing: /products",
+      followUps: ["Browse the collection", "Do you deliver to my area?", "What rental packages do you offer?"],
+    },
+  },
+  // ── Pricing / cost ──
+  {
+    keywords: ["price", "pricing", "cost", "how much", "rate", "rates", "expensive", "affordable", "cheap", "budget"],
+    response: {
+      text: "Our pricing is transparent and competitive:\n\n• **Chairs** — from $8/day\n• **Tables** — from $15/day\n• **Linens** — from $5/day\n• **Arches** — from $150 flat\n• **Lighting** — from $75 flat\n• **PA systems** — from $250/day\n\nPackages start at **$500** and save you 10-20% vs. a la carte. All prices are visible in our online collection!\n\n-> Browse with prices: /products",
+      followUps: ["What rental packages do you offer?", "Browse the collection", "How do I place an order?"],
+    },
+  },
+  // ── Chairs ──
+  {
+    keywords: ["chair", "chairs", "seating", "chiavari"],
+    response: {
+      text: "We have several beautiful chair options:\n\n• **Gold Chiavari** — Elegant and classic, $8/day\n• **Silver Chiavari** — Modern and sleek, $8/day\n• **Cross-back** — Rustic farmhouse style, $10/day\n• **White folding** — Clean and simple, $3/day\n\nAll chairs come with cushions. Minimum order of 20.\n\n-> See all chairs: /products?category=chairs",
+      followUps: ["Browse the collection", "What rental packages do you offer?", "I need help choosing items for my event."],
+    },
+  },
+  // ── Tables ──
+  {
+    keywords: ["table", "tables"],
+    response: {
+      text: "We offer a variety of table styles:\n\n• **60\" Round** — Seats 8-10 guests, $15/day\n• **72\" Round** — Seats 10-12 guests, $18/day\n• **6ft Rectangular** — Seats 6-8, $12/day\n• **8ft Rectangular** — Seats 8-10, $15/day\n• **Cocktail/Highboy** — Standing height, $20/day\n\n-> See all tables: /products?category=tables",
+      followUps: ["Browse the collection", "What about chairs?", "What rental packages do you offer?"],
+    },
+  },
+  // ── Linens ──
+  {
+    keywords: ["linen", "linens", "tablecloth", "napkin", "runner", "sash"],
+    response: {
+      text: "Our linen collection includes:\n\n• **Tablecloths** — Available in 20+ colors, from $5/day\n• **Napkins** — Matching or contrasting, from $1/each\n• **Table runners** — Elegant accent, from $8/day\n• **Chair sashes** — Organza, satin, or burlap, from $2/each\n\nWe can color-match to your event theme!\n\n-> See all linens: /products?category=linens",
+      followUps: ["Browse the collection", "What about chairs?", "What rental packages do you offer?"],
+    },
+  },
+  // ── Arches ──
+  {
+    keywords: ["arch", "arches", "backdrop", "ceremony"],
+    response: {
+      text: "Our arch and backdrop options include:\n\n• **Round arch** — Modern circle design, $200 flat\n• **Rectangular arch** — Classic frame, $175 flat\n• **Triangular arch** — Bohemian style, $150 flat\n• **Draping fabric** — Add-on, from $50\n\nAll arches can be decorated with your florals or our greenery add-ons.\n\n-> See all arches: /products?category=arches",
+      followUps: ["Browse the collection", "What rental packages do you offer?", "I need help choosing items for my event."],
+    },
+  },
+  // ── Lighting ──
+  {
+    keywords: ["light", "lights", "lighting", "uplighting", "string light"],
+    response: {
+      text: "We offer beautiful lighting options:\n\n• **String lights** (100ft) — Warm Edison-style, $75 flat\n• **LED uplighting** (set of 10) — 16 color options with remote, $150 flat\n• **Bistro lights** (50ft) — Classic cafe style, $50 flat\n\nLighting transforms any venue! Our Grand Celebration package includes uplighting.\n\n-> Browse the collection: /products",
+      followUps: ["What's included in Grand Celebration?", "Browse the collection", "Do you deliver to my area?"],
+    },
+  },
+  // ── Account / sign in ──
+  {
+    keywords: ["account", "sign in", "login", "log in", "my orders", "order status"],
+    response: {
+      text: "You can manage everything from your account:\n\n• **View order history** and status\n• **Track deliveries** in real-time\n• **Download invoices**\n• **Reschedule or cancel** bookings\n\n-> Sign in to your account: /login\n-> View your orders: /account\n\nDon't have an account? One is created automatically when you place your first order.",
+      followUps: ["How do I place an order?", "What's your cancellation policy?", "Browse the collection"],
+    },
+  },
+  // ── How far in advance ──
+  {
+    keywords: ["advance", "ahead of time", "when should i book", "how early", "last minute"],
+    response: {
+      text: "We recommend booking **at least 4-6 weeks** in advance for most events. For peak wedding season (April-October), we suggest **2-3 months** ahead to ensure availability.\n\nLast-minute bookings are sometimes possible - just reach out and we'll do our best!\n\n-> Start browsing: /products",
+      followUps: ["How do I place an order?", "What rental packages do you offer?", "Browse the collection"],
+    },
+  },
+  // ── Hours / contact ──
+  {
+    keywords: ["hours", "contact", "phone", "call", "email", "reach"],
+    response: {
+      text: "You can reach us anytime!\n\n• **AI Chat** — Available 24/7 right here\n• **AI Voice Line** — Call " + AI_PHONE_NUMBER + " anytime\n• **Online** — Browse and book 24/7 at our website\n\nFor complex event planning needs, our team is available Monday-Saturday, 9am-6pm.",
+      followUps: ["How do I place an order?", "Browse the collection", "I need help choosing items for my event."],
+    },
+  },
+  // ── Greetings ──
+  {
+    keywords: ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "howdy"],
+    response: {
+      text: "Hello! Welcome to Lolita Harris Event Rentals. I'm here to help you find everything you need for your event. What can I help you with?",
+      followUps: ["What rental packages do you offer?", "Browse the collection", "I need help choosing items for my event.", "How do I place an order?"],
+    },
+  },
+  // ── Thanks ──
+  {
+    keywords: ["thank", "thanks", "thank you", "appreciate"],
+    response: {
+      text: "You're welcome! Is there anything else I can help you with? Whether it's rental details, event planning tips, or placing an order - I'm here for you!",
+      followUps: ["Browse the collection", "What rental packages do you offer?", "How do I place an order?"],
+    },
+  },
+  // ── Appointment / meet ──
+  {
+    keywords: ["appointment", "appot", "meet", "visit", "showroom", "come in", "in person"],
+    response: {
+      text: "We'd love to meet with you! While most of our ordering is done conveniently online, we can arrange:\n\n• **Virtual consultations** for event planning\n• **Phone consultations** at " + AI_PHONE_NUMBER + "\n\nFor the fastest experience, you can browse our full collection online and place your order anytime.\n\n-> Browse the collection: /products\n-> Call us: " + AI_PHONE_NUMBER,
+      followUps: ["Browse the collection", "I need help choosing items for my event.", "What rental packages do you offer?"],
+    },
+  },
+  // ── Setup / breakdown ──
+  {
+    keywords: ["setup", "set up", "breakdown", "break down", "install", "assemble"],
+    response: {
+      text: "All rentals include **professional setup and breakdown**!\n\n• We arrive 2-4 hours before your event\n• Our team handles all setup and styling\n• After your event, we return for full breakdown and pickup\n• You don't need to lift a finger!\n\nThis is included in every package and rental order.",
+      followUps: ["What rental packages do you offer?", "Do you deliver to my area?", "How do I place an order?"],
+    },
+  },
+];
+
+const DEFAULT_FOLLOW_UPS = [
+  "What rental packages do you offer?",
+  "Browse the collection",
+  "I need help choosing items for my event.",
+  "How do I place an order?",
+];
+
+function getResponse(input: string): Response {
   const lower = input.toLowerCase().trim();
-  for (const [key, value] of Object.entries(MOCK_RESPONSES)) {
-    if (lower.includes(key) || key.includes(lower)) return value;
+
+  // Check each response entry for keyword matches
+  for (const entry of RESPONSES) {
+    for (const keyword of entry.keywords) {
+      if (lower.includes(keyword)) {
+        return entry.response;
+      }
+    }
   }
-  return "Thanks for your message! I can help with rental availability, pricing, packages, delivery info, and event planning. Feel free to ask, or call our AI assistant at " + AI_PHONE_NUMBER + " for instant help!";
+
+  return {
+    text: "I'm not sure about that, but I'd love to help! Here are some things I can assist with:\n\n• Rental packages and pricing\n• Browsing our collection\n• Event planning recommendations\n• Delivery and setup info\n• Booking and orders\n\nOr you can call us at " + AI_PHONE_NUMBER + " to speak with our AI voice assistant!",
+    followUps: DEFAULT_FOLLOW_UPS,
+  };
 }
 
 export default function AIChatWidget() {
@@ -40,16 +263,22 @@ export default function AIChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      text: `Hi! I'm Lolita's AI assistant. I can help you find the perfect rentals for your event. You can also call our AI voice line at **${AI_PHONE_NUMBER}** anytime.\n\nHow can I help you today?`,
+      text: `Hi! I'm Lolita's AI assistant. I can help you find the perfect rentals for your event. You can also call us at **${AI_PHONE_NUMBER}** anytime.\n\nHow can I help you today?`,
     },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [followUps, setFollowUps] = useState<string[]>(QUICK_REPLIES);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, typing]);
+  }, [messages, typing, followUps]);
+
+  const handleLinkClick = (href: string) => {
+    setOpen(false);
+    window.location.href = href;
+  };
 
   const sendMessage = (text: string) => {
     if (!text.trim()) return;
@@ -57,12 +286,46 @@ export default function AIChatWidget() {
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setTyping(true);
+    setFollowUps([]);
 
     setTimeout(() => {
       const response = getResponse(text);
-      setMessages((prev) => [...prev, { role: "assistant", text: response }]);
+      setMessages((prev) => [...prev, { role: "assistant", text: response.text }]);
+      setFollowUps(response.followUps);
       setTyping(false);
     }, 800 + Math.random() * 700);
+  };
+
+  // Render message text with bold and clickable links
+  const renderText = (text: string) => {
+    return text.split("\n").map((line, j) => {
+      // Check if line is a link line like "-> Browse: /products"
+      const linkMatch = line.match(/^->\s*(.+?):\s*(\/\S+)/);
+      if (linkMatch) {
+        return (
+          <p key={j} className={j > 0 ? "mt-1.5" : ""}>
+            <button
+              onClick={() => handleLinkClick(linkMatch[2])}
+              className="inline-flex items-center gap-1 font-medium text-champagne-dark underline underline-offset-2 transition-colors hover:text-champagne"
+            >
+              {linkMatch[1]} &rarr;
+            </button>
+          </p>
+        );
+      }
+
+      return (
+        <p key={j} className={j > 0 ? "mt-1.5" : ""}>
+          {line.split(/(\*\*.*?\*\*)/).map((part, k) =>
+            part.startsWith("**") && part.endsWith("**") ? (
+              <strong key={k}>{part.slice(2, -2)}</strong>
+            ) : (
+              part
+            )
+          )}
+        </p>
+      );
+    });
   };
 
   return (
@@ -100,8 +363,8 @@ export default function AIChatWidget() {
                 </svg>
               </button>
               <div>
-                <h3 className="font-heading text-base font-medium text-white">AI Assistant</h3>
-                <p className="font-body text-xs text-white/70">Powered by Retell AI</p>
+                <h3 className="font-heading text-base font-medium text-white">Lolita Harris</h3>
+                <p className="font-body text-xs text-white/70">AI Event Concierge</p>
               </div>
             </div>
             <a
@@ -129,17 +392,7 @@ export default function AIChatWidget() {
                       : "bg-ivory text-charcoal"
                   }`}
                 >
-                  {msg.text.split("\n").map((line, j) => (
-                    <p key={j} className={j > 0 ? "mt-1.5" : ""}>
-                      {line.split(/(\*\*.*?\*\*)/).map((part, k) =>
-                        part.startsWith("**") && part.endsWith("**") ? (
-                          <strong key={k}>{part.slice(2, -2)}</strong>
-                        ) : (
-                          part
-                        )
-                      )}
-                    </p>
-                  ))}
+                  {renderText(msg.text)}
                 </div>
               </div>
             ))}
@@ -157,10 +410,10 @@ export default function AIChatWidget() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Quick replies */}
-          {messages.length <= 1 && (
+          {/* Quick replies / follow-up buttons */}
+          {followUps.length > 0 && !typing && (
             <div className="flex flex-wrap gap-1.5 border-t border-ivory-dark px-4 py-3">
-              {QUICK_REPLIES.map((q) => (
+              {followUps.map((q) => (
                 <button
                   key={q}
                   onClick={() => sendMessage(q)}
